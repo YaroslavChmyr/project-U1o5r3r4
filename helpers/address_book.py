@@ -60,6 +60,12 @@ class Record:
                 phone.value = new_phone
                 break
 
+    def show_phones(self):
+        if self.phones:
+            return "\n".join(phone.value for phone in self.phones)
+        else:
+            return "No phone numbers available."
+
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
 
@@ -75,7 +81,7 @@ class Record:
                     is_note = True
         if not is_note:
             raise ValueError("No note with such title. Please try again.")
-        
+
     def remove_note(self, title):
         is_note = False
         for note in self.notes:
@@ -100,12 +106,6 @@ class Record:
 
     def remove_address(self):
         self.address = None
-
-    def find_phone(self, phone):
-        for p in self.phones:
-            if p.value == phone:
-                return p
-        return None
 
 
 class AddressBook(UserDict):
