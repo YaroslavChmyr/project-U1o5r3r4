@@ -1,4 +1,5 @@
 from helpers.address_book import AddressBook, Record
+from prettytable import PrettyTable
 
 
 def parse_input(user_input):
@@ -66,37 +67,87 @@ def show_phone(args, book):
 @input_error
 def show_all(book):
     if book.data.values():
+        table = PrettyTable()
+        table.field_names = ["Name", "Phones", "Address", "Birthday", "Notes"]
+        table.align = "l"
+
         for record in book.data.values():
-            print(record)
+            phones_str = ", ".join(p.value for p in record.phones)
+            notes_str = ", ".join(n.value for n in record.notes)
+            address_str = (
+                record.address.value
+                if hasattr(record, "address") and record.address
+                else ""
+            )
+            birthday_str = (
+                record.birthday.value
+                if hasattr(record, "birthday") and record.birthday
+                else ""
+            )
+
+            table.add_row(
+                [record.name.value, phones_str, address_str, birthday_str, notes_str]
+            )
+
+        print(table)
     else:
         print("No contacts available.")
 
 
 @input_error
-def add_birthday(args, book):
-    if len(args) == 2:
-        name, birthday = args
-        record = book.find(name)
-        if record:
-            record.add_birthday(birthday)
-            return "Birthday added."
-        else:
-            raise KeyError(name)
+def add_birthday(name, birthday, book):
+    record = book.find(name)
+    if record:
+        record.add_birthday(birthday)
+        return "Birthday added."
     else:
-        raise ValueError(
-            "Invalid command format. Use '[name] [date]' as command arguments."
-        )
+        raise KeyError(name)
 
 
 @input_error
 def show_birthday(args, book):
-    name = args[0]
+    if len(args) == 1:
+        name = args[0]
+        record = book.find(name)
+        if record and record.birthday:
+            return record.birthday.value
+        else:
+            raise KeyError(name)
+    else:
+        raise ValueError(
+            "Invalid command format. Use 'show-birthday [name]' to get the contact's birthday."
+        )
+
+
+@input_error
+def add_address(name, address, book):
     record = book.find(name)
-    if record and record.birthday:
-        return record.birthday.value
+    if record:
+        record.add_address(address)
+        return "Address added."
     else:
         raise KeyError(name)
-    
+
+
+@input_error
+def edit_address(name, new_address, book):
+    record = book.find(name)
+    if record:
+        record.edit_address(new_address)
+        return "Address updated."
+    else:
+        raise KeyError(name)
+
+
+@input_error
+def remove_address(name, book):
+    record = book.find(name)
+    if record:
+        record.remove_address()
+        return "Address removed."
+    else:
+        raise KeyError(name)
+
 
 @input_error
 def add_note(name, note, book):
@@ -141,11 +192,24 @@ def main():
             elif command == "all":
                 show_all(book)
             elif command == "add-birthday":
-                print(add_birthday(args, book))
+                name = input("Please enter contact name: ")
+                birthday = input("Please enter contact's birthday: ")
+                print(add_birthday(name, birthday, book))
             elif command == "show-birthday":
                 print(show_birthday(args, book))
             elif command == "birthdays":
                 print(birthdays(book))
+            elif command == "add-address":
+                name = input("Please enter contact name: ")
+                address = input("Please enter contact's address: ")
+                print(add_address(name, address, book))
+            elif command == "edit-address":
+                name = input("Please enter contact name: ")
+                new_address = input("Please enter new address: ")
+                print(edit_address(name, new_address, book))
+            elif command == "remove-address":
+                name = input("Please enter contact name: ")
+                print(remove_address(name, book))
             elif command == "add-note":
                 name = input("Please enter contact name: ")
                 note = input("Please enter note text: ")
