@@ -97,9 +97,7 @@ def show_all(book):
                 else ""
             )
 
-            table.add_row(
-                [record.name.value, phones_str, address_str, birthday_str, notes_str]
-            )
+            table.add_row([record.name.value, phones_str, address_str, birthday_str, notes_str], divider=True)
 
         print(table)
     else:
