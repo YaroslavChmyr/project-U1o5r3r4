@@ -1,6 +1,7 @@
 from helpers.address_book import AddressBook, Record
 from prettytable import PrettyTable
 
+
 def parse_input(user_input):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
@@ -67,16 +68,26 @@ def show_phone(args, book):
 def show_all(book):
     if book.data.values():
         table = PrettyTable()
-        table.field_names = ["Name", "Phones", "Addresses","Birthday","Notes"]
+        table.field_names = ["Name", "Phones", "Address", "Birthday", "Notes"]
         table.align = "l"
 
         for record in book.data.values():
-            phones_str = ', '.join(p.value for p in record.phones)
-            addresses_str = ', '.join(a.value for a in record.addresses)
-            notes_str = ', '.join(n.value for n in record.notes)
-            birthday_str = record.birthday.value if hasattr(record, 'birthday') and record.birthday else ""
+            phones_str = ", ".join(p.value for p in record.phones)
+            notes_str = ", ".join(n.value for n in record.notes)
+            address_str = (
+                record.address.value
+                if hasattr(record, "address") and record.address
+                else ""
+            )
+            birthday_str = (
+                record.birthday.value
+                if hasattr(record, "birthday") and record.birthday
+                else ""
+            )
 
-            table.add_row([record.name.value, phones_str, addresses_str, birthday_str, notes_str])
+            table.add_row(
+                [record.name.value, phones_str, address_str, birthday_str, notes_str]
+            )
 
         print(table)
     else:
@@ -85,12 +96,13 @@ def show_all(book):
 
 @input_error
 def add_birthday(name, birthday, book):
-        record = book.find(name)
-        if record:
-            record.add_birthday(birthday)
-            return "Birthday added."
-        else:
-            raise KeyError(name)
+    record = book.find(name)
+    if record:
+        record.add_birthday(birthday)
+        return "Birthday added."
+    else:
+        raise KeyError(name)
+
 
 @input_error
 def show_birthday(args, book):
@@ -106,14 +118,6 @@ def show_birthday(args, book):
             "Invalid command format. Use 'show-birthday [name]' to get the contact's birthday."
         )
 
-@input_error
-def add_note(name, note, book):
-    record = book.find(name)
-    if record:
-        record.add_note(note)
-        return "Note added."
-    else:
-        raise KeyError(name)
 
 @input_error
 def add_address(name, address, book):
@@ -123,6 +127,37 @@ def add_address(name, address, book):
         return "Address added."
     else:
         raise KeyError(name)
+
+
+@input_error
+def edit_address(name, new_address, book):
+    record = book.find(name)
+    if record:
+        record.edit_address(new_address)
+        return "Address updated."
+    else:
+        raise KeyError(name)
+
+
+@input_error
+def remove_address(name, book):
+    record = book.find(name)
+    if record:
+        record.remove_address()
+        return "Address removed."
+    else:
+        raise KeyError(name)
+
+
+@input_error
+def add_note(name, note, book):
+    record = book.find(name)
+    if record:
+        record.add_note(note)
+        return "Note added."
+    else:
+        raise KeyError(name)
+
 
 def birthdays(book):
     birthdays = book.get_birthdays_per_week()
@@ -168,6 +203,13 @@ def main():
                 name = input("Please enter contact name: ")
                 address = input("Please enter contact's address: ")
                 print(add_address(name, address, book))
+            elif command == "edit-address":
+                name = input("Please enter contact name: ")
+                new_address = input("Please enter new address: ")
+                print(edit_address(name, new_address, book))
+            elif command == "remove-address":
+                name = input("Please enter contact name: ")
+                print(remove_address(name, book))
             elif command == "add-note":
                 name = input("Please enter contact name: ")
                 note = input("Please enter note text: ")

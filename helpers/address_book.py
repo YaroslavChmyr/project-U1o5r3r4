@@ -43,8 +43,9 @@ class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
-        self.addresses = []
         self.notes = []
+        # Assume only one address
+        self.addresss = None
 
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
@@ -65,7 +66,18 @@ class Record:
         self.notes.append(Note(note))
 
     def add_address(self, address):
-        self.addresses.append(Address(address))
+        if self.address:
+            raise ValueError("Contact already has an address. Use 'edit-address' to modify.")
+        self.address = Address(address)
+
+    def edit_address(self, new_address):
+        if self.address:
+            self.address.value = new_address
+        else:
+            raise ValueError("No address to edit. Add an address first.")
+
+    def remove_address(self):
+        self.address = None
 
     def find_phone(self, phone):
         for p in self.phones:
@@ -91,7 +103,7 @@ class AddressBook(UserDict):
 
         for record in self.data.values():
             # check if the record object has the attribute birthday before attempting to access its value.
-            if hasattr(record, 'birthday'):
+            if hasattr(record, "birthday"):
                 birthday_date = datetime.strptime(
                     record.birthday.value, "%d.%m.%Y"
                 ).date()
