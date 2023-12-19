@@ -45,7 +45,7 @@ class Record:
         self.phones = []
         self.notes = []
         # Assume only one address
-        self.addresss = None
+        self.address = None
 
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
