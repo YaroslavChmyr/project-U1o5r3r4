@@ -1,5 +1,5 @@
 from helpers.address_book import AddressBook, Record
-
+from prettytable import PrettyTable
 
 def parse_input(user_input):
     cmd, *args = user_input.split()
@@ -66,37 +66,45 @@ def show_phone(args, book):
 @input_error
 def show_all(book):
     if book.data.values():
+        table = PrettyTable()
+        table.field_names = ["Name", "Phones", "Addresses","Birthday","Notes"]
+        table.align = "l"
+
         for record in book.data.values():
-            print(record)
+            phones_str = ', '.join(p.value for p in record.phones)
+            addresses_str = ', '.join(a.value for a in record.addresses)
+            notes_str = ', '.join(n.value for n in record.notes)
+            birthday_str = record.birthday.value if hasattr(record, 'birthday') and record.birthday else ""
+
+            table.add_row([record.name.value, phones_str, addresses_str, birthday_str, notes_str])
+
+        print(table)
     else:
         print("No contacts available.")
 
 
 @input_error
-def add_birthday(args, book):
-    if len(args) == 2:
-        name, birthday = args
+def add_birthday(name, birthday, book):
         record = book.find(name)
         if record:
             record.add_birthday(birthday)
             return "Birthday added."
         else:
             raise KeyError(name)
-    else:
-        raise ValueError(
-            "Invalid command format. Use '[name] [date]' as command arguments."
-        )
-
 
 @input_error
 def show_birthday(args, book):
-    name = args[0]
-    record = book.find(name)
-    if record and record.birthday:
-        return record.birthday.value
+    if len(args) == 1:
+        name = args[0]
+        record = book.find(name)
+        if record and record.birthday:
+            return record.birthday.value
+        else:
+            raise KeyError(name)
     else:
-        raise KeyError(name)
-    
+        raise ValueError(
+            "Invalid command format. Use 'show-birthday [name]' to get the contact's birthday."
+        )
 
 @input_error
 def add_note(name, note, book):
@@ -107,6 +115,14 @@ def add_note(name, note, book):
     else:
         raise KeyError(name)
 
+@input_error
+def add_address(name, address, book):
+    record = book.find(name)
+    if record:
+        record.add_address(address)
+        return "Address added."
+    else:
+        raise KeyError(name)
 
 def birthdays(book):
     birthdays = book.get_birthdays_per_week()
@@ -141,11 +157,17 @@ def main():
             elif command == "all":
                 show_all(book)
             elif command == "add-birthday":
-                print(add_birthday(args, book))
+                name = input("Please enter contact name: ")
+                birthday = input("Please enter contact's birthday: ")
+                print(add_birthday(name, birthday, book))
             elif command == "show-birthday":
                 print(show_birthday(args, book))
             elif command == "birthdays":
                 print(birthdays(book))
+            elif command == "add-address":
+                name = input("Please enter contact name: ")
+                address = input("Please enter contact's address: ")
+                print(add_address(name, address, book))
             elif command == "add-note":
                 name = input("Please enter contact name: ")
                 note = input("Please enter note text: ")

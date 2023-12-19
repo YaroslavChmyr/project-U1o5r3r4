@@ -15,9 +15,17 @@ class Name(Field):
     pass
 
 
+class Note(Field):
+    pass
+
+
+class Address(Field):
+    pass
+
+
 class Phone(Field):
     def __init__(self, value):
-        # Валідація формату номера телефону (10 цифр)
+        # Phone number verification (10 digits)
         if not re.match(r"^\d{10}$", value):
             raise ValueError("Invalid phone number format. Use a 10-digit number.")
         super().__init__(value)
@@ -25,20 +33,17 @@ class Phone(Field):
 
 class Birthday(Field):
     def __init__(self, value):
-        # Валідація формату дня народження (DD.MM.YYYY)
+        # Date format verification (DD.MM.YYYY)
         if not re.match(r"^\d{2}\.\d{2}.\d{4}$", value):
             raise ValueError("Invalid birthday format. Use DD.MM.YYYY.")
         super().__init__(value)
-
-
-class Note(Field):
-    pass
 
 
 class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
+        self.addresses = []
         self.notes = []
 
     def add_phone(self, phone):
@@ -59,14 +64,14 @@ class Record:
     def add_note(self, note):
         self.notes.append(Note(note))
 
+    def add_address(self, address):
+        self.addresses.append(Address(address))
+
     def find_phone(self, phone):
         for p in self.phones:
             if p.value == phone:
                 return p
         return None
-
-    def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 
 class AddressBook(UserDict):
@@ -85,7 +90,8 @@ class AddressBook(UserDict):
         today = datetime.today().date()
 
         for record in self.data.values():
-            if record.birthday:
+            # check if the record object has the attribute birthday before attempting to access its value.
+            if hasattr(record, 'birthday'):
                 birthday_date = datetime.strptime(
                     record.birthday.value, "%d.%m.%Y"
                 ).date()
