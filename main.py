@@ -72,8 +72,14 @@ def show_all(book):
         table.align = "l"
 
         for record in book.data.values():
-            phones_str = ", ".join(p.value for p in record.phones)
-            notes_str = ", ".join(n.value for n in record.notes)
+            phones_str = "\n".join(p.value for p in record.phones)
+            notes_str = ""
+            for note in record.notes:
+                for value in note.data.values():
+                    if notes_str == "":
+                        notes_str += value
+                    else:
+                        notes_str += f"\n{value}"
             address_str = (
                 record.address.value
                 if hasattr(record, "address") and record.address
@@ -150,11 +156,31 @@ def remove_address(name, book):
 
 
 @input_error
-def add_note(name, note, book):
+def add_note(name, title, note, book):
     record = book.find(name)
     if record:
-        record.add_note(note)
+        record.add_note(title, note)
         return "Note added."
+    else:
+        raise KeyError(name)
+    
+
+@input_error
+def edit_note(name, title, new_note, book):
+    record = book.find(name)
+    if record:
+        record.edit_note(title, new_note)
+        return "Note updated."
+    else:
+        raise KeyError(name)
+    
+
+@input_error
+def remove_note(name, title, book):
+    record = book.find(name)
+    if record:
+        record.remove_note(title)
+        return "Note removed."
     else:
         raise KeyError(name)
 
@@ -192,7 +218,7 @@ def main():
                 days = int(args[0]) if args else 7
                 print(book.birthdays(days))
             elif command == "add-address":
-                name = input("Please enter contact name: ")
+                name = input("Please enter contact name: ")              
                 address = input("Please enter contact's address: ")
                 print(add_address(name, address, book))
             elif command == "edit-address":
@@ -204,8 +230,18 @@ def main():
                 print(remove_address(name, book))
             elif command == "add-note":
                 name = input("Please enter contact name: ")
+                title = input("Please enter note title: ")
                 note = input("Please enter note text: ")
-                print(add_note(name, note, book))
+                print(add_note(name, title, note, book))
+            elif command == "edit-note":
+                name = input("Please enter contact name: ")
+                title = input("Please enter note title: ")
+                new_note = input("Please enter text for a new note: ")
+                print(edit_note(name, title, new_note, book))
+            elif command == "remove-note":
+                name = input("Please enter contact name: ")
+                title = input("Please enter note title: ")
+                print(remove_note(name, title, book))
             else:
                 print("Invalid command.")
     finally:

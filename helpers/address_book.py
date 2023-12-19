@@ -15,8 +15,9 @@ class Name(Field):
     pass
 
 
-class Note(Field):
-    pass
+class Note(UserDict):
+    def __init__(self, title, note):
+        super().__init__({title: note})
 
 
 class Address(Field):
@@ -62,8 +63,29 @@ class Record:
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
 
-    def add_note(self, note):
-        self.notes.append(Note(note))
+    def add_note(self, title, note):
+        self.notes.append(Note(title, note))
+
+    def edit_note(self, title, new_note):
+        is_note = False
+        for note in self.notes:
+            for element in note.data:
+                if element == title:
+                    note.data[title] = new_note
+                    is_note = True
+        if not is_note:
+            raise ValueError("No note with such title. Please try again.")
+        
+    def remove_note(self, title):
+        is_note = False
+        for note in self.notes:
+            for element in note.data:
+                if element == title:
+                    is_note = True
+        if is_note:
+            note.data.pop(title)
+        else:
+            raise ValueError("No note with such title. Please try again.")
 
     def add_address(self, address):
         if self.address:
