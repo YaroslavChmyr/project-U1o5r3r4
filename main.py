@@ -159,16 +159,6 @@ def add_note(name, note, book):
         raise KeyError(name)
 
 
-def birthdays(book):
-    birthdays = book.get_birthdays_per_week()
-    if birthdays:
-        return "\n".join(
-            [f"{name}: {', '.join(birthday)}" for name, birthday in birthdays.items()]
-        )
-    else:
-        return "No upcoming birthdays."
-
-
 def main():
     try:
         book = AddressBook()
@@ -198,7 +188,9 @@ def main():
             elif command == "show-birthday":
                 print(show_birthday(args, book))
             elif command == "birthdays":
-                print(birthdays(book))
+                # Default to 7 days if no argument provided
+                days = int(args[0]) if args else 7
+                print(book.birthdays(days))
             elif command == "add-address":
                 name = input("Please enter contact name: ")
                 address = input("Please enter contact's address: ")
