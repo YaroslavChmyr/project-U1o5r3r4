@@ -118,6 +118,21 @@ class AddressBook(UserDict):
     def delete(self, name):
         if name in self.data:
             del self.data[name]
+    
+    def search_note(self, title):
+        for record in self.data.values():
+            is_note = False
+            for note in record.notes:
+                for note_title, value in note.data.items():
+                    if note_title == title:
+                        notes_title_str = note_title
+                        notes_str = value
+                        contact_name = record.name.value
+                        is_note = True
+        if is_note:
+            return notes_title_str, notes_str, contact_name
+        else:
+            raise ValueError("No note with such title. Please try again.")
 
     def get_birthdays_per_week(self):
         birthdays_per_week = defaultdict(list)

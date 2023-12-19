@@ -183,6 +183,21 @@ def remove_note(name, title, book):
         return "Note removed."
     else:
         raise KeyError(name)
+    
+
+@input_error
+def search_note(title, book):
+    if book.data.values():
+        table = PrettyTable()
+        table.field_names = ["Contact Name", "Note Title", "Note Content"]
+        table.align = "l"
+        note_title, note, contact_name = book.search_note(title)
+        table.add_row(
+                [contact_name, note_title, note]
+            )
+        return table
+    else:
+        print("No notes available.")
 
 
 def birthdays(book):
@@ -250,6 +265,9 @@ def main():
                 name = input("Please enter contact name: ")
                 title = input("Please enter note title: ")
                 print(remove_note(name, title, book))
+            elif command == "search-note":
+                title = input("Please enter note title: ")
+                print(search_note(title, book))
             else:
                 print("Invalid command.")
     finally:
