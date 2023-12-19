@@ -31,10 +31,15 @@ class Birthday(Field):
         super().__init__(value)
 
 
+class Note(Field):
+    pass
+
+
 class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
+        self.notes = []
 
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
@@ -50,6 +55,9 @@ class Record:
 
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
+
+    def add_note(self, note):
+        self.notes.append(Note(note))
 
     def find_phone(self, phone):
         for p in self.phones:
