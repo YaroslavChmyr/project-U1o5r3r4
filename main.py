@@ -96,6 +96,16 @@ def show_birthday(args, book):
         return record.birthday.value
     else:
         raise KeyError(name)
+    
+
+@input_error
+def add_note(name, note, book):
+    record = book.find(name)
+    if record:
+        record.add_note(note)
+        return "Note added."
+    else:
+        raise KeyError(name)
 
 
 def birthdays(book):
@@ -136,6 +146,10 @@ def main():
                 print(show_birthday(args, book))
             elif command == "birthdays":
                 print(birthdays(book))
+            elif command == "add-note":
+                name = input("Please enter contact name: ")
+                note = input("Please enter note text: ")
+                print(add_note(name, note, book))
             else:
                 print("Invalid command.")
     finally:
