@@ -61,6 +61,7 @@ class Record:
         self.phones = []
         # Assume only one address
         self.address = None
+        self.birthday: Birthday = None
         self.notes: list[Note] = []
 
     def add_phone(self, phone):

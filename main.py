@@ -73,41 +73,25 @@ def show_phones(name, book):
         raise KeyError(name)
 
 
+
 @input_error
-def show_all(book):
-    if book.data.values():
-        table = PrettyTable()
-        table.field_names = ["Name", "Phones", "Address", "Birthday", "Note Title", "Note Content"]
-        table.align = "l"
+def show_all(book: AddressBook):
+    if not book.data.values():
+        return "No contacts available."
 
-        for record in book.data.values():
-            phones_str = "\n".join(p.value for p in record.phones)
-            notes_str = ""
-            notes_titles_str = ""
-            for note in record.notes:
-                for title, value in note.data.items():
-                    if notes_str == "":
-                        notes_str += value
-                        notes_titles_str += title
-                    else:
-                        notes_str += f"\n{value}"
-                        notes_titles_str += f"\n{title}"
-            address_str = (
-                record.address.value
-                if hasattr(record, "address") and record.address
-                else ""
-            )
-            birthday_str = (
-                record.birthday.value
-                if hasattr(record, "birthday") and record.birthday
-                else ""
-            )
+    table = PrettyTable()
+    table.field_names = ["Name", "Phones", "Address", "Birthday", "Notes"]
+    table.align = "l"
 
-            table.add_row([record.name.value, phones_str, address_str, birthday_str, notes_titles_str, notes_str], divider=True)
+    for record in book.data.values():
+        phones_str = "\n".join(p.value for p in record.phones)
+        notes_str = ", ".join([repr(note.title) for note in record.notes])
+        address_str = str(record.address or "")
+        birthday_str = str(record.birthday or "")
 
-        print(table)
-    else:
-        print("No contacts available.")
+        table.add_row([record.name.value, phones_str, address_str, birthday_str, notes_str], divider=True)
+
+    return str(table)
 
 
 @input_error
@@ -290,7 +274,7 @@ def main():
             elif command == COMMANDS.HELLO:
                 print("How can I help you?")
             elif command == COMMANDS.ALL:
-                show_all(book)
+                print(show_all(book))
             elif command == COMMANDS.ADD_CONTACT:
                 name = input("Please enter contact name: ")
                 print(add_contact(name, book))
