@@ -83,18 +83,21 @@ def show_phones(name, book):
 def show_all(book):
     if book.data.values():
         table = PrettyTable()
-        table.field_names = ["Name", "Phones", "Address", "Birthday", "Notes"]
+        table.field_names = ["Name", "Phones", "Address", "Birthday", "Note Title", "Note Content"]
         table.align = "l"
 
         for record in book.data.values():
             phones_str = "\n".join(p.value for p in record.phones)
             notes_str = ""
+            notes_titles_str = ""
             for note in record.notes:
-                for value in note.data.values():
+                for title, value in note.data.items():
                     if notes_str == "":
                         notes_str += value
+                        notes_titles_str += title
                     else:
                         notes_str += f"\n{value}"
+                        notes_titles_str += f"\n{title}"
             address_str = (
                 record.address.value
                 if hasattr(record, "address") and record.address
@@ -195,6 +198,21 @@ def remove_note(name, title, book):
         raise KeyError(name)
 
 
+@input_error
+def search_note(title, book):
+    if book.data.values():
+        table = PrettyTable()
+        table.field_names = ["Contact Name", "Note Title", "Note Content"]
+        table.align = "l"
+        note_title, note, contact_name = book.search_note(title)
+        table.add_row(
+                [contact_name, note_title, note]
+            )
+        return table
+    else:
+        print("No notes available.")
+
+
 def main():
     try:
         book = AddressBook()
@@ -269,6 +287,9 @@ def main():
                 name = input("Please enter contact name: ")
                 title = input("Please enter note title: ")
                 print(remove_note(name, title, book))
+            elif command == "search-note":
+                title = input("Please enter note title: ")
+                print(search_note(title, book))
             else:
                 print("Invalid command.")
     finally:

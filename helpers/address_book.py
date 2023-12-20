@@ -70,7 +70,13 @@ class Record:
         self.birthday = Birthday(birthday)
 
     def add_note(self, title, note):
-        self.notes.append(Note(title, note))
+        is_title = False
+        for element in self.notes:
+            if title in element.data:
+                is_title = True
+                raise ValueError("Note with this title already exists.")
+        if not is_title:
+            self.notes.append(Note(title, note))
 
     def edit_note(self, title, new_note):
         is_note = False
@@ -117,6 +123,21 @@ class AddressBook(UserDict):
 
     def delete(self, name):
         super().pop(name, None)
+
+    def search_note(self, title):
+        for record in self.data.values():
+            is_note = False
+            for note in record.notes:
+                for note_title, value in note.data.items():
+                    if note_title == title:
+                        notes_title_str = note_title
+                        notes_str = value
+                        contact_name = record.name.value
+                        is_note = True
+        if is_note:
+            return notes_title_str, notes_str, contact_name
+        else:
+            raise ValueError("No note with such title. Please try again.")
 
     def get_birthdays_days_interval(self, days):
         birthdays_per_days_interval = defaultdict(list)
