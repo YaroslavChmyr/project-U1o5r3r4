@@ -70,7 +70,13 @@ class Record:
         self.birthday = Birthday(birthday)
 
     def add_note(self, title, note):
-        self.notes.append(Note(title, note))
+        is_title = False
+        for element in self.notes:
+            if title in element.data:
+                is_title = True
+                raise ValueError("Note with this title already exists.")
+        if not is_title:
+            self.notes.append(Note(title, note))
 
     def edit_note(self, title, new_note):
         is_note = False
