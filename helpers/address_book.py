@@ -116,8 +116,7 @@ class AddressBook(UserDict):
         return self.data.get(name)
 
     def delete(self, name):
-        if name in self.data:
-            del self.data[name]
+        super().pop(name, None)
 
     def get_birthdays_days_interval(self, days):
         birthdays_per_days_interval = defaultdict(list)
