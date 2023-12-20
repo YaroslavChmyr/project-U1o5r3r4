@@ -15,9 +15,24 @@ class Name(Field):
     pass
 
 
-class Note(UserDict):
+# Добавляємо теги
+
+class Note:
     def __init__(self, title, note):
-        super().__init__({title: note})
+        self.title = title
+        self.text = note
+        self.tags: set[str] = set()
+
+    def add_tag(self, tag: str | list[str]):
+        if isinstance(tag, str):
+            self.tags.add(tag)
+        elif isinstance(tag, list):
+            self.tags |= set(tag)
+        else:
+            raise TypeError
+
+    def remove_tag(self, tag):
+        self.tags.pop(tag, None)
 
 
 class Address(Field):
@@ -44,9 +59,9 @@ class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
-        self.notes = []
         # Assume only one address
         self.address = None
+        self.notes: list[Note] = []
 
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
@@ -73,25 +88,51 @@ class Record:
         self.notes.append(Note(title, note))
 
     def edit_note(self, title, new_note):
-        is_note = False
         for note in self.notes:
-            for element in note.data:
-                if element == title:
-                    note.data[title] = new_note
-                    is_note = True
-        if not is_note:
-            raise ValueError("No note with such title. Please try again.")
-
-    def remove_note(self, title):
-        is_note = False
-        for note in self.notes:
-            for element in note.data:
-                if element == title:
-                    is_note = True
-        if is_note:
-            note.data.pop(title)
+            if note.title == title:
+                note.text = new_note
+                break
         else:
             raise ValueError("No note with such title. Please try again.")
+
+    def get_note(self, title: str) -> Note:
+        filtered_notes = [note for note in self.notes if note.title == title]
+        if len(filtered_notes) == 0:
+            raise KeyError
+        return filtered_notes[0]
+
+    def remove_note(self, title):
+        for i, note in enumerate(self.notes):
+            if note.title == title:
+                self.notes.pop(i)
+                break
+        else:
+            raise ValueError("No note with such title. Please try again.")
+
+    def sort_notes_by_tags(self, note_tags: str | list[str]):
+        tags = set()
+        if isinstance(note_tags, str):
+            tags.add(note_tags)
+        elif isinstance(note_tags, list):
+            tags |= set(note_tags)
+        else:
+            raise TypeError
+
+        self.notes.sort(
+            key=lambda note: len(note.tags & tags),
+            reverse=True,
+        )
+
+    def search_notes_by_tags(self, tags: str | list[str]):
+        search_tags = set()
+        if isinstance(tags, str):
+            search_tags.add(tags)
+        elif isinstance(tags, list):
+            search_tags |= set(tags)
+        else:
+            raise TypeError
+
+        return [note for note in self.notes if len(note.tags & search_tags) != 0]
 
     def add_address(self, address):
         if self.address:
