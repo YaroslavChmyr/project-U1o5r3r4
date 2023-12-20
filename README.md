@@ -1,5 +1,6 @@
 # Personal assistant
 
+## About
 Personal assistant is a command line application for storing and interacting with address book entries and notes.
 
 Personal assistant allows:
@@ -13,11 +14,17 @@ Personal assistant allows:
 - Edit and delete notes
 
 
-## Requirements
+## Installation
 
-- prettytable library
+Save and install your package:
 ```
->>> pip install prettytable
+python setup.py sdist
+pip install dist/personal_assistant-1.0.tar.gz
+```
+
+Call the program:
+```
+personal_assistant
 ```
 
 ## Command list:
