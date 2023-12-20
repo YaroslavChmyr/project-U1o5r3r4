@@ -60,6 +60,12 @@ class Record:
                 phone.value = new_phone
                 break
 
+    def show_phones(self):
+        if self.phones:
+            return "\n".join(phone.value for phone in self.phones)
+        else:
+            return "No phone numbers available."
+
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
 
@@ -75,7 +81,7 @@ class Record:
                     is_note = True
         if not is_note:
             raise ValueError("No note with such title. Please try again.")
-        
+
     def remove_note(self, title):
         is_note = False
         for note in self.notes:
@@ -101,12 +107,6 @@ class Record:
     def remove_address(self):
         self.address = None
 
-    def find_phone(self, phone):
-        for p in self.phones:
-            if p.value == phone:
-                return p
-        return None
-
 
 class AddressBook(UserDict):
     def add_record(self, record):
@@ -119,16 +119,14 @@ class AddressBook(UserDict):
         if name in self.data:
             del self.data[name]
 
-    def get_birthdays_per_week(self):
-        birthdays_per_week = defaultdict(list)
+    def get_birthdays_days_interval(self, days):
+        birthdays_per_days_interval = defaultdict(list)
         today = datetime.today().date()
 
         for record in self.data.values():
             # check if the record object has the attribute birthday before attempting to access its value.
             if hasattr(record, "birthday"):
-                birthday_date = datetime.strptime(
-                    record.birthday.value, "%d.%m.%Y"
-                ).date()
+                birthday_date = datetime.strptime(record.birthday.value, "%d.%m.%Y").date()
                 birthday_this_year = birthday_date.replace(year=today.year)
 
                 if birthday_this_year < today:
@@ -136,14 +134,23 @@ class AddressBook(UserDict):
 
                 delta_days = (birthday_this_year - today).days
 
-                if delta_days < 7:
+                if 0 <= delta_days <= days:
                     day_of_week = (today + timedelta(days=delta_days)).strftime("%A")
                     if day_of_week in ["Saturday", "Sunday"]:
                         day_of_week = "Monday"
 
-                    birthdays_per_week[day_of_week].append(record.name.value)
+                    birthdays_per_days_interval[day_of_week].append(record.name.value)
 
-        return birthdays_per_week
+        return birthdays_per_days_interval
+
+    def birthdays(self, days):
+        birthdays_in_interval = self.get_birthdays_days_interval(days)
+        if birthdays_in_interval:
+            return "\n".join(
+                [f"{name}: {', '.join(birthday)}" for name, birthday in birthdays_in_interval.items()]
+            )
+        else:
+            return "No upcoming birthdays."
 
     def save_to_file(self, filename):
         with open(filename, "wb") as file:
