@@ -299,7 +299,3 @@ def main():
                 print("Invalid command.")
     finally:
         book.save_to_file("address_book.dat")
-
-
-if __name__ == "__main__":
-    main()

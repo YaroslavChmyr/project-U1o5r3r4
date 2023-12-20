@@ -12,7 +12,6 @@ Personal assistant allows:
 - Search for notes
 - Edit and delete notes
 
-## Downloads
 
 ## Requirements
 
