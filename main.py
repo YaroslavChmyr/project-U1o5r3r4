@@ -110,7 +110,7 @@ def show_all(book):
             )
 
             table.add_row(
-                [record.name.value, phones_str, address_str, birthday_str, notes_str],
+                [record.name.value, phones_str, address_str, birthday_str, notes_titles_str, notes_str],
                 divider=True
             )
 
