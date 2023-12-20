@@ -15,7 +15,7 @@ def input_error(func):
         except ValueError as e:
             return str(e)
         except KeyError as e:
-            return f"Contact with the name {e} doesn't exists. Use 'add [name] [new_phone]' to add."
+            return f"Contact with the name {e} doesn't exists. Use 'add-contact' to add."
         except IndexError:
             return "Invalid command format. Use 'phone [name]' to get contact number."
         except Exception as e:
@@ -25,41 +25,47 @@ def input_error(func):
 
 
 @input_error
-def add_contact(args, book):
-    if len(args) == 2:
-        name, phone = args
-        record = Record(name)
-        record.add_phone(phone)
-        book.add_record(record)
-        return "Contact added."
-    else:
-        raise ValueError(
-            "Invalid command format. Use '[name] [phone]' as command arguments."
-        )
+def add_contact(name, book):
+    record = Record(name)
+    book.add_record(record)
+    return "Contact added."
 
 
 @input_error
-def change_contact(args, book):
-    if len(args) == 2:
-        name, new_phone = args
-        record = book.find(name)
-        if record:
-            record.edit_phone(record.phones[0].value, new_phone)
-            return "Contact updated."
-        else:
-            raise KeyError(name)
-    else:
-        raise ValueError(
-            "Invalid command format. Use '[name] [phone]' as command arguments."
-        )
-
-
-@input_error
-def show_phone(args, book):
-    name = args[0]
+def add_phone(name, phone, book):
     record = book.find(name)
     if record:
-        return record.phones[0].value
+        record.add_phone(phone)
+        return "Phone added."
+    else:
+        raise KeyError(name)
+
+
+@input_error
+def edit_phone(name, old_phone, new_phone, book):
+    record = book.find(name)
+    if record:
+        record.edit_phone(old_phone, new_phone)
+        return "Phone updated."
+    else:
+        raise KeyError(name)
+
+
+@input_error
+def remove_phone(name, phone, book):
+    record = book.find(name)
+    if record:
+        record.remove_phone(phone)
+        return "Phone removed."
+    else:
+        raise KeyError(name)
+
+
+@input_error
+def show_phones(name, book):
+    record = book.find(name)
+    if record:
+        return record.show_phones()
     else:
         raise KeyError(name)
 
@@ -91,9 +97,7 @@ def show_all(book):
                 else ""
             )
 
-            table.add_row(
-                [record.name.value, phones_str, address_str, birthday_str, notes_str]
-            )
+            table.add_row([record.name.value, phones_str, address_str, birthday_str, notes_str], divider=True)
 
         print(table)
     else:
@@ -111,18 +115,12 @@ def add_birthday(name, birthday, book):
 
 
 @input_error
-def show_birthday(args, book):
-    if len(args) == 1:
-        name = args[0]
-        record = book.find(name)
-        if record and record.birthday:
-            return record.birthday.value
-        else:
-            raise KeyError(name)
+def show_birthday(name, book):
+    record = book.find(name)
+    if record and record.birthday:
+        return record.birthday.value
     else:
-        raise ValueError(
-            "Invalid command format. Use 'show-birthday [name]' to get the contact's birthday."
-        )
+        raise KeyError(name)
 
 
 @input_error
@@ -163,7 +161,7 @@ def add_note(name, title, note, book):
         return "Note added."
     else:
         raise KeyError(name)
-    
+
 
 @input_error
 def edit_note(name, title, new_note, book):
@@ -173,7 +171,7 @@ def edit_note(name, title, new_note, book):
         return "Note updated."
     else:
         raise KeyError(name)
-    
+
 
 @input_error
 def remove_note(name, title, book):
@@ -200,16 +198,6 @@ def search_note(title, book):
         print("No notes available.")
 
 
-def birthdays(book):
-    birthdays = book.get_birthdays_per_week()
-    if birthdays:
-        return "\n".join(
-            [f"{name}: {', '.join(birthday)}" for name, birthday in birthdays.items()]
-        )
-    else:
-        return "No upcoming birthdays."
-
-
 def main():
     try:
         book = AddressBook()
@@ -224,24 +212,40 @@ def main():
                 break
             elif command == "hello":
                 print("How can I help you?")
-            elif command == "add":
-                print(add_contact(args, book))
-            elif command == "change":
-                print(change_contact(args, book))
-            elif command == "phone":
-                print(show_phone(args, book))
             elif command == "all":
                 show_all(book)
+            elif command == "add-contact":
+                name = input("Please enter contact name: ")
+                print(add_contact(name, book))
+            elif command == "add-phone":
+                name = input("Please enter contact name: ")
+                phone = input("Please enter contact's phone: ")
+                print(add_phone(name, phone, book))
+            elif command == "edit-phone":
+                name = input("Please enter contact name: ")
+                old_phone = input("Please enter phone: ")
+                new_phone = input("Please enter new phone: ")
+                print(edit_phone(name, old_phone, new_phone, book))
+            elif command == "remove-phone":
+                name = input("Please enter contact name: ")
+                phone = input("Please enter phone number to remove: ")
+                print(remove_phone(name, phone, book))
+            elif command == "show-phones":
+                name = input("Please enter contact name: ")
+                print(show_phones(name, book))
             elif command == "add-birthday":
                 name = input("Please enter contact name: ")
                 birthday = input("Please enter contact's birthday: ")
                 print(add_birthday(name, birthday, book))
             elif command == "show-birthday":
-                print(show_birthday(args, book))
+                name = input("Please enter contact name: ")
+                print(show_birthday(name, book))
             elif command == "birthdays":
-                print(birthdays(book))
+                # Default to 7 days if no argument provided
+                days = int(args[0]) if args else 7
+                print(book.birthdays(days))
             elif command == "add-address":
-                name = input("Please enter contact name: ")              
+                name = input("Please enter contact name: ")
                 address = input("Please enter contact's address: ")
                 print(add_address(name, address, book))
             elif command == "edit-address":
