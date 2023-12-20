@@ -15,10 +15,10 @@ class Name(Field):
     pass
 
 
-class Note(UserDict):
+class Note():
     def __init__(self, title, note):
-        super().__init__({title: note})
-
+        self.title = title
+        self.note = note
 
 class Address(Field):
     pass
@@ -70,32 +70,28 @@ class Record:
         self.birthday = Birthday(birthday)
 
     def add_note(self, title, note):
-        is_title = False
         for element in self.notes:
-            if title in element.data:
-                is_title = True
+            if title == element.title:
                 raise ValueError("Note with this title already exists.")
-        if not is_title:
+        else:
             self.notes.append(Note(title, note))
 
     def edit_note(self, title, new_note):
         is_note = False
         for note in self.notes:
-            for element in note.data:
-                if element == title:
-                    note.data[title] = new_note
-                    is_note = True
+            if note.title == title:
+                note.note = new_note
+                is_note = True
         if not is_note:
             raise ValueError("No note with such title. Please try again.")
 
     def remove_note(self, title):
-        is_note = False
+        note_to_remove = None
         for note in self.notes:
-            for element in note.data:
-                if element == title:
-                    is_note = True
-        if is_note:
-            note.data.pop(title)
+            if note.title == title:
+                note_to_remove = note
+        if note_to_remove != None:
+            self.notes.remove(note_to_remove)
         else:
             raise ValueError("No note with such title. Please try again.")
 
@@ -128,12 +124,11 @@ class AddressBook(UserDict):
         for record in self.data.values():
             is_note = False
             for note in record.notes:
-                for note_title, value in note.data.items():
-                    if note_title == title:
-                        notes_title_str = note_title
-                        notes_str = value
-                        contact_name = record.name.value
-                        is_note = True
+                if note.title == title:
+                    notes_title_str = title
+                    notes_str = note.note
+                    contact_name = record.name.value
+                    is_note = True
         if is_note:
             return notes_title_str, notes_str, contact_name
         else:
