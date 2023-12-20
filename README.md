@@ -71,3 +71,24 @@ Please enter contact's birthday: 25.12.1986
 Birthday added.
 ```
 
+### Display birthdays that will occur during the next 12 days
+```
+Enter a command: birthdays 12
+Monday: Lisa
+Friday: Roman
+```
+
+### Display information about all contacts
+```
+Enter a command: all
++--------+------------+-------------------------------+------------+------------+---------------------------+
+| Name   | Phones     | Address                       | Birthday   | Note Title | Note Content              |
++--------+------------+-------------------------------+------------+------------+---------------------------+
+| Eugene | 0967441285 | Kyiv, Peremohy ave 86, apt 40 | 02.08.1984 | Meeting    | Don't forget to call Lisa |
+|        |            |                               |            | Shoping    | Need bananas for cake     |
++--------+------------+-------------------------------+------------+------------+---------------------------+
+| Lisa   | 0994441265 |                               | 25.12.1982 |            |                           |
++--------+------------+-------------------------------+------------+------------+---------------------------+
+| Roman  |            |                               | 29.12.1976 |            |                           |
++--------+------------+-------------------------------+------------+------------+---------------------------+
+```
