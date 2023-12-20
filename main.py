@@ -16,8 +16,8 @@ def input_error(func):
             return str(e)
         except KeyError as e:
             return f"Contact with the name {e} doesn't exists. Use 'add-contact' to add."
-        except IndexError:
-            return "Invalid command format. Use 'phone [name]' to get contact number."
+        except IndexError as e:
+            return f"Index error occurred: {str(e)}"
         except Exception as e:
             return f"An unexpected error occurred: {str(e)}"
 
@@ -30,6 +30,15 @@ def add_contact(name, book):
     book.add_record(record)
     return "Contact added."
 
+
+@input_error
+def remove_contact(name, book):
+    record = book.find(name)
+    if record:
+        book.delete(name)
+        return f"Contact '{name}' removed."
+    else:
+        raise KeyError(name)
 
 @input_error
 def add_phone(name, phone, book):
@@ -100,7 +109,10 @@ def show_all(book):
                 else ""
             )
 
-            table.add_row([record.name.value, phones_str, address_str, birthday_str, notes_titles_str, notes_str], divider=True)
+            table.add_row(
+                [record.name.value, phones_str, address_str, birthday_str, notes_titles_str, notes_str],
+                divider=True
+            )
 
         print(table)
     else:
@@ -184,7 +196,7 @@ def remove_note(name, title, book):
         return "Note removed."
     else:
         raise KeyError(name)
-    
+
 
 @input_error
 def search_note(title, book):
@@ -220,6 +232,9 @@ def main():
             elif command == "add-contact":
                 name = input("Please enter contact name: ")
                 print(add_contact(name, book))
+            elif command == "remove-contact":
+                name = input("Please enter contact name: ")
+                print(remove_contact(name, book))
             elif command == "add-phone":
                 name = input("Please enter contact name: ")
                 phone = input("Please enter contact's phone: ")

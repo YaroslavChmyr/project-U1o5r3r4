@@ -122,9 +122,8 @@ class AddressBook(UserDict):
         return self.data.get(name)
 
     def delete(self, name):
-        if name in self.data:
-            del self.data[name]
-    
+        super().pop(name, None)
+
     def search_note(self, title):
         for record in self.data.values():
             is_note = False
