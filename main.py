@@ -77,18 +77,21 @@ def show_phones(name, book):
 def show_all(book):
     if book.data.values():
         table = PrettyTable()
-        table.field_names = ["Name", "Phones", "Address", "Birthday", "Notes"]
+        table.field_names = ["Name", "Phones", "Address", "Birthday", "Note Title", "Note Content"]
         table.align = "l"
 
         for record in book.data.values():
             phones_str = "\n".join(p.value for p in record.phones)
             notes_str = ""
+            notes_titles_str = ""
             for note in record.notes:
-                for value in note.data.values():
+                for title, value in note.data.items():
                     if notes_str == "":
                         notes_str += value
+                        notes_titles_str += title
                     else:
                         notes_str += f"\n{value}"
+                        notes_titles_str += f"\n{title}"
             address_str = (
                 record.address.value
                 if hasattr(record, "address") and record.address
@@ -100,7 +103,7 @@ def show_all(book):
                 else ""
             )
 
-            table.add_row([record.name.value, phones_str, address_str, birthday_str, notes_str], divider=True)
+            table.add_row([record.name.value, phones_str, address_str, birthday_str, notes_titles_str, notes_str], divider=True)
 
         print(table)
     else:
@@ -184,6 +187,21 @@ def remove_note(name, title, book):
         return "Note removed."
     else:
         raise KeyError(name)
+    
+
+@input_error
+def search_note(title, book):
+    if book.data.values():
+        table = PrettyTable()
+        table.field_names = ["Contact Name", "Note Title", "Note Content"]
+        table.align = "l"
+        note_title, note, contact_name = book.search_note(title)
+        table.add_row(
+                [contact_name, note_title, note]
+            )
+        return table
+    else:
+        print("No notes available.")
 
 
 @input_error
@@ -233,7 +251,8 @@ class COMMANDS(str, Enum):
     ADD_NOTE = "add-note"
     EDIT_NOTE = "edit-note"
     REMOVE_NOTE = "remove-note"
-
+    SEARCH_NOTE = "search-note"
+    
     ADD_TAG = "add-tag"
     SEARCH_BY_TAGS = "search-by-tags"
 
@@ -331,7 +350,9 @@ def main():
                 print(add_tag(args, book))
             elif command == COMMANDS.SEARCH_BY_TAGS:
                 print(search_by_tags(args, book))
-
+            elif command == COMMANDS.SEARCH_NOTE:
+                title = input("Please enter note title: ")
+                print(search_note(title, book))
     finally:
         book.save_to_file("address_book.dat")
 
