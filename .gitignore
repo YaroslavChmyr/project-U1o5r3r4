@@ -5,3 +5,6 @@ address_book.dat
 venv
 
 .env
+
+**.egg-info
+*.tar.gz
