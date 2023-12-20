@@ -26,10 +26,15 @@ def input_error(func):
 
 @input_error
 def add_contact(name, book):
-    record = Record(name)
-    book.add_record(record)
-    return "Contact added."
+    if not name:
+        raise ValueError("Contact name cannot be empty.")
 
+    if book.find(name):
+        return f"Contact with the name '{name}' already exists."
+    else:
+        record = Record(name)
+        book.add_record(record)
+        return f"Contact '{name}' added."
 
 @input_error
 def remove_contact(name, book):
