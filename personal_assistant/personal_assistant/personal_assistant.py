@@ -1,4 +1,4 @@
-from helpers.address_book import AddressBook, Record
+from .address_book import AddressBook, Record
 from prettytable import PrettyTable
 
 
