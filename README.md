@@ -22,9 +22,9 @@ python setup.py sdist
 pip install dist/personal_assistant-1.0.tar.gz
 ```
 
-Call the program:
+Call the program from the console:
 ```
-personal_assistant
+run_personal_assistant
 ```
 
 ## Command list:
