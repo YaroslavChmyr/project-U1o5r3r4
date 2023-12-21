@@ -1,6 +1,7 @@
 from .address_book import AddressBook, Record
 from prettytable import PrettyTable
-
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import WordCompleter
 
 def parse_input(user_input):
     cmd, *args = user_input.split()
@@ -249,13 +250,43 @@ def show_help():
     print("  - help: Show available commands.")
     print("  - close/exit: Close the assistant bot.")
 
+available_commands = {
+    "add-contact" : "add_contact",
+    "remove-contact" : "remove_contact",
+    "add-phone" : "add_phone",
+    "edit-phone" : "edit_phone",
+    "remove-phone" : "remove_phone",
+    "show-phones" : "show_phones",
+    "all" : "show_all",
+    "add-birthday": "add_birthday",
+    "show-birthday" : "show_birthday",
+    "add-address" : "add_address",
+    "edit-address" :"edit_address",
+    "remove-address" : "remove_address",
+    "add-note" : "add_note",
+    "edit-note" : "edit_note",
+    "remove-note" : "remove_note",
+    "search-note" : "search_note",
+    "help" : "show_help",
+    "exit" : "",
+    "close" : "",
+    "hello" : "",
+    "help" : ""
+}
+
+
+def get_user_input():
+    user_input = prompt("Enter a command: ", completer=WordCompleter(available_commands.keys))
+    return user_input
+
+
 def main():
     try:
         book = AddressBook()
         book.load_from_file("address_book.dat")
         print("Welcome to the assistant bot!")
         while True:
-            user_input = input("Enter a command: ")
+            user_input = get_user_input()
             command, *args = parse_input(user_input)
 
             if command in ["close", "exit"]:

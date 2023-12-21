@@ -5,7 +5,8 @@ setup(
     version='1.0.0',
     packages=find_namespace_packages(),
     install_requires=[
-        'prettytable'
+        'prettytable',
+        'prompt_toolkit'
     ],
     entry_points={
         'console_scripts': [
