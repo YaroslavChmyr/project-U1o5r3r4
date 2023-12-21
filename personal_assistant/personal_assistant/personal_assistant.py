@@ -1,4 +1,4 @@
-from helpers.address_book import AddressBook, Record
+from .address_book import AddressBook, Record
 from prettytable import PrettyTable
 
 
@@ -96,13 +96,12 @@ def show_all(book):
             notes_str = ""
             notes_titles_str = ""
             for note in record.notes:
-                for title, value in note.data.items():
-                    if notes_str == "":
-                        notes_str += value
-                        notes_titles_str += title
-                    else:
-                        notes_str += f"\n{value}"
-                        notes_titles_str += f"\n{title}"
+                if notes_str == "":
+                    notes_str += note.note
+                    notes_titles_str += note.title
+                else:
+                    notes_str += f"\n{note.note}"
+                    notes_titles_str += f"\n{note.title}"
             address_str = (
                 record.address.value
                 if hasattr(record, "address") and record.address
@@ -341,7 +340,3 @@ def main():
                 print("Invalid command.")
     finally:
         book.save_to_file("address_book.dat")
-
-
-if __name__ == "__main__":
-    main()
