@@ -1,7 +1,7 @@
 from collections import Counter
 from enum import Enum
 
-from helpers.address_book import AddressBook, Record
+from .address_book import AddressBook, Record
 from prettytable import PrettyTable
 
 
@@ -13,8 +13,8 @@ def input_error(func):
             return str(e)
         except KeyError as e:
             return f"Contact with the name {e} doesn't exists. Use 'add-contact' to add."
-        except IndexError:
-            return "Invalid command format. Use 'phone [name]' to get contact number."
+        except IndexError as e:
+            return f"Index error occurred: {str(e)}"
         except Exception as e:
             return f"An unexpected error occurred: {str(e)}"
 
@@ -29,10 +29,24 @@ def parse_input(user_input):
 
 @input_error
 def add_contact(name, book):
-    record = Record(name)
-    book.add_record(record)
-    return "Contact added."
+    if not name:
+        raise ValueError("Contact name cannot be empty.")
 
+    if book.find(name):
+        return f"Contact with the name '{name}' already exists."
+    else:
+        record = Record(name)
+        book.add_record(record)
+        return f"Contact '{name}' added."
+
+@input_error
+def remove_contact(name, book):
+    record = book.find(name)
+    if record:
+        book.delete(name)
+        return f"Contact '{name}' removed."
+    else:
+        raise KeyError(name)
 
 @input_error
 def add_phone(name, phone, book):
@@ -171,7 +185,7 @@ def remove_note(name, title, book):
         return "Note removed."
     else:
         raise KeyError(name)
-    
+
 
 @input_error
 def search_note(title, book):
@@ -187,6 +201,28 @@ def search_note(title, book):
     else:
         print("No notes available.")
 
+def show_help():
+    print("Available commands:")
+    print("  - hello: Print a welcome message.")
+    print("  - all: Show all contacts.")
+    print("  - add-contact: Add a new contact.")
+    print("  - remove-contact: Remove a contact.")
+    print("  - add-phone: Add a phone number to a contact.")
+    print("  - edit-phone: Edit a phone number of a contact.")
+    print("  - remove-phone: Remove a phone number from a contact.")
+    print("  - show-phones: Show all phone numbers of a contact.")
+    print("  - add-birthday: Add a birthday to a contact.")
+    print("  - show-birthday: Show the birthday of a contact.")
+    print("  - birthdays [days]: Show upcoming birthdays for the specified number of days (default is 7 days).")
+    print("  - add-address: Add an address to a contact.")
+    print("  - edit-address: Edit the address of a contact.")
+    print("  - remove-address: Remove the address of a contact.")
+    print("  - add-note: Add a note to a contact.")
+    print("  - edit-note: Edit a note of a contact.")
+    print("  - remove-note: Remove a note from a contact.")
+    print("  - search-note: Search for a note by title.")
+    print("  - help: Show available commands.")
+    print("  - close/exit: Close the assistant bot.")
 
 @input_error
 def add_tag(args, book: AddressBook):
@@ -215,10 +251,12 @@ class COMMANDS(str, Enum):
     CLOSE = "close"
     EXIT = "exit"
     HELLO = "hello"
+    HELP = "help"
     ALL = "all"
 
     ADD_CONTACT = "add-contact"
-
+    REMOVE_CONTACTS = "remove-contact"
+    
     ADD_PHONE = "add-phone"
     EDIT_PHONE = "edit-phone"
     REMOVE_PHONE = "remove-phone"
@@ -278,6 +316,9 @@ def main():
             elif command == COMMANDS.ADD_CONTACT:
                 name = input("Please enter contact name: ")
                 print(add_contact(name, book))
+            elif command == COMMANDS.REMOVE_CONTACTS:
+                name = input("Please enter contact name: ")
+                print(remove_contact(name, book))
             elif command == COMMANDS.ADD_PHONE:
                 name = input("Please enter contact name: ")
                 phone = input("Please enter contact's phone: ")
@@ -337,9 +378,8 @@ def main():
             elif command == COMMANDS.SEARCH_NOTE:
                 title = input("Please enter note title: ")
                 print(search_note(title, book))
+            elif command == COMMANDS.HELP:
+                show_help()
+           
     finally:
         book.save_to_file("address_book.dat")
-
-
-if __name__ == "__main__":
-    main()

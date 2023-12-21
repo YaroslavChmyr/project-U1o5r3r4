@@ -1,41 +1,100 @@
-### Список команд:
+# Personal assistant
 
-- **add [name] [phone]**: Додати новий контакт з іменем та телефонним номером.
-- **change [name] [phone]**: Змінити телефонний номер для вказаного контакту.
-- **phone [name]**: Показати телефонний номер для вказаного контакту.
-- **all**: Показати всі контакти в адресній книзі.
-- **add-birthday [name] [date]**: Додати дату народження для вказаного контакту.
-- **show-birthday [name]**: Показати дату народження для вказаного контакту.
-- **birthdays**: Показати дні народження, які відбудуться протягом наступного тижня.
-- **hello**: Отримати вітання від бота.
-- **close або exit**: Закрити програму.
+## About
+Personal assistant is a command line application for storing and interacting with address book entries and notes.
 
-### Обробка помилок:
+Personal assistant allows:
+- Store contacts with names, addresses, phone numbers, email and birthdays in the contact book
+- Display a list of contacts whose birthday is a specified number of days from the current date
+- Check the  entered phone number and email when creating or editing a record and notify the user in case of incorrect entry
+- Search for contacts among book contacts
+- Edit and delete entries from the contact book
+- Keep notes with text information
+- Search for notes
+- Edit and delete notes
 
-#### Обробка ValueError
+
+## Installation
+
+Save and install your package:
 ```
-Enter a command: add Eugene
-Invalid command format. Use '[name] [phone]' as command arguments.
-Enter a command: change Anna
-Invalid command format. Use '[name] [phone]' as command arguments.
-Enter a command: add Eugene +380 987554115
-Invalid command format. Use '[name] [phone]' as command arguments.
-Enter a command: add Eugene +380987554115
-Invalid phone number format. Use a 10-digit number.
-Enter a command: add-birthday Eugene 1984.06.23
-Invalid birthday format. Use DD.MM.YYYY.
-```
-#### Обробка KeyError
-```
-Enter a command: phone Tanya
-Contact with the name 'Tanya' doesn't exists. Use 'add [name] [new_phone]' to add.
-Enter a command: change John 0965354185
-Contact with the name 'John' doesn't exists. Use 'add [name] [new_phone]' to add.
-Enter a command: add-birthday Eric 10.11.2005
-Contact with the name 'Eric' doesn't exists. Use 'add [name] [new_phone]' to add.
+python setup.py sdist
+pip install dist/personal_assistant-1.0.tar.gz
 ```
 
-#### Обробка IndexError
+Call the program from the console:
 ```
-Enter a command: phone
-Invalid command format. Use 'phone [name]' to get contact number.
+run_personal_assistant
+```
+
+## Command list:
+
+- **add-contact**: Add a new contact.
+- **remove-contact**: Remove contact.
+- **add-phone**: Add a phone number to contact.
+- **edit-phone**: Edit an existing phone number.
+- **remove-phone**: Delete a phone number from a contact.
+- **show-phones**: Display phone numbers for the contact.
+- **add-birthday**: Add a birhtday to contact.
+- **show-birthday**: Display birthday for the contact.
+- **birthdays [days]**: Show birthdays that will occur during the next day interval. Days is 7 by default.
+- **add-address**: Add address to contact.
+- **edit-address**: Edit an existing address.
+- **remove-address**: Remove address.
+- **add-email**: Add email address to contact.
+- **edit-email**: Edit an existing email address.
+- **remove-email**: Delete email address from a contact.
+- **add-note**: Add note with a title to the contact.
+- **edit-note**: Edit an existing note.
+- **remove-note**: Remove note from a contact.
+- **search-note**: Search for note by title.
+- **all**: Display information about all contacts.
+- **hello**: Get a greeting from an assistant.
+- **close** or **exit**: Close the program.
+
+## Examples:
+
+### Add contact to the contact book
+```
+Welcome to the assistant bot!
+Enter a command: add-contact
+Please enter contact name: Yaroslav
+Contact added.
+```
+### Add a contact phone number
+```
+Enter a command: add-phone
+Please enter contact name: Lisa
+Please enter contact's phone: 0997411235
+Phone added.
+```
+
+### Add a contact birthday
+```
+Enter a command: add-birthday
+Please enter contact name: Lisa
+Please enter contact's birthday: 25.12.1986
+Birthday added.
+```
+
+### Display birthdays that will occur during the next 12 days
+```
+Enter a command: birthdays 12
+Monday: Lisa
+Friday: Roman
+```
+
+### Display information about all contacts
+```
+Enter a command: all
++--------+------------+-------------------------------+------------+------------+---------------------------+
+| Name   | Phones     | Address                       | Birthday   | Note Title | Note Content              |
++--------+------------+-------------------------------+------------+------------+---------------------------+
+| Eugene | 0967441285 | Kyiv, Peremohy ave 86, apt 40 | 02.08.1984 | Meeting    | Don't forget to call Lisa |
+|        |            |                               |            | Shoping    | Need bananas for cake     |
++--------+------------+-------------------------------+------------+------------+---------------------------+
+| Lisa   | 0994441265 |                               | 25.12.1982 |            |                           |
++--------+------------+-------------------------------+------------+------------+---------------------------+
+| Roman  |            |                               | 29.12.1976 |            |                           |
++--------+------------+-------------------------------+------------+------------+---------------------------+
+```
