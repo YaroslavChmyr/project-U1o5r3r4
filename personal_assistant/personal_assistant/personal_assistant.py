@@ -22,6 +22,7 @@ def input_error(func):
         except Exception as e:
             return f"An unexpected error occurred: {str(e)}"
 
+    inner.__doc__ = func.__doc__
     return inner
 
 
@@ -33,6 +34,9 @@ def check_name(name, book):
 
 @input_error
 def add_contact(book):
+    """
+    Add a new contact.
+    """
     name = input("Please enter contact name: ")
     if not name:
         raise ValueError("Contact name cannot be empty.")
@@ -46,6 +50,9 @@ def add_contact(book):
 
 @input_error
 def remove_contact(book):
+    """
+    Remove a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     book.delete(name)
@@ -54,6 +61,9 @@ def remove_contact(book):
 
 @input_error
 def add_phone(book):
+    """
+    Add a phone number to a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     phone = input("Please enter contact's phone: ")
@@ -64,6 +74,9 @@ def add_phone(book):
 
 @input_error
 def edit_phone(book):
+    """
+    Edit a phone number of a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     old_phone = input("Please enter phone you want to edit: ")
@@ -75,6 +88,9 @@ def edit_phone(book):
 
 @input_error
 def remove_phone(book):
+    """
+    Remove a phone number from a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     phone = input("Please enter phone number to remove: ")
@@ -85,6 +101,9 @@ def remove_phone(book):
 
 @input_error
 def show_phones(book):
+    """
+    Show all phone numbers of contacts.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     record = book.find(name)
@@ -93,6 +112,9 @@ def show_phones(book):
 
 @input_error
 def show_all(book):
+    """
+    Show all contacts.
+    """
     if book.data.values():
         table = PrettyTable()
         table.field_names = ["Name", "Phones", "Address", "Birthday", "Note Title", "Note Content"]
@@ -132,6 +154,9 @@ def show_all(book):
 
 @input_error
 def add_birthday(book):
+    """
+    Add a birthday to a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     birthday = input("Please enter contact's birthday: ")
@@ -142,6 +167,9 @@ def add_birthday(book):
 
 @input_error
 def show_birthday(book):
+    """
+    Show the birthday of a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     record = book.find(name)
@@ -153,6 +181,9 @@ def show_birthday(book):
 
 @input_error
 def add_address(book):
+    """
+    Add an address to a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     address = input("Please enter contact's address: ")
@@ -163,6 +194,9 @@ def add_address(book):
 
 @input_error
 def edit_address(book):
+    """
+    Edit the address of a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     new_address = input("Please enter new address: ")
@@ -173,6 +207,9 @@ def edit_address(book):
 
 @input_error
 def remove_address(book):
+    """
+    Remove the address of a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     record = book.find(name)
@@ -182,6 +219,9 @@ def remove_address(book):
 
 @input_error
 def add_note(book):
+    """
+    Add a note to a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     title = input("Please enter note title: ")
@@ -193,6 +233,9 @@ def add_note(book):
 
 @input_error
 def edit_note(book):
+    """
+    Edit a note of a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     title = input("Please enter note title: ")
@@ -204,6 +247,9 @@ def edit_note(book):
 
 @input_error
 def remove_note(book):
+    """
+    Remove a note from a contact.
+    """
     name = input("Please enter contact's name: ")
     check_name(name, book)
     title = input("Please enter note title: ")
@@ -214,6 +260,9 @@ def remove_note(book):
 
 @input_error
 def search_note(book):
+    """
+    Search for a note by title.
+    """
     title = input("Please enter note title: ")
     if book.data.values():
         table = PrettyTable()
@@ -226,29 +275,6 @@ def search_note(book):
         return table
     else:
         print("No notes available.")
-
-def show_help():
-    print("Available commands:")
-    print("  - hello: Print a welcome message.")
-    print("  - all: Show all contacts.")
-    print("  - add-contact: Add a new contact.")
-    print("  - remove-contact: Remove a contact.")
-    print("  - add-phone: Add a phone number to a contact.")
-    print("  - edit-phone: Edit a phone number of a contact.")
-    print("  - remove-phone: Remove a phone number from a contact.")
-    print("  - show-phones: Show all phone numbers of a contact.")
-    print("  - add-birthday: Add a birthday to a contact.")
-    print("  - show-birthday: Show the birthday of a contact.")
-    print("  - birthdays [days]: Show upcoming birthdays for the specified number of days (default is 7 days).")
-    print("  - add-address: Add an address to a contact.")
-    print("  - edit-address: Edit the address of a contact.")
-    print("  - remove-address: Remove the address of a contact.")
-    print("  - add-note: Add a note to a contact.")
-    print("  - edit-note: Edit a note of a contact.")
-    print("  - remove-note: Remove a note from a contact.")
-    print("  - search-note: Search for a note by title.")
-    print("  - help: Show available commands.")
-    print("  - close/exit: Close the assistant bot.")
 
 available_commands = {
     "add-contact" : "add_contact",
@@ -268,12 +294,28 @@ available_commands = {
     "remove-note" : "remove_note",
     "search-note" : "search_note",
     "help" : "show_help",
-    "exit" : "",
-    "close" : "",
-    "hello" : "",
-    "help" : ""
+    "exit" : "exit",
+    "close" : "close",
+    "hello" : "hello"
 }
 
+def show_help():
+    """
+    Display help information for available commands.
+    """
+    print("Available commands:")
+    for command in available_commands.values():
+        if command in ["exit","close"]:
+            command_desc = "Exit the assistant bot."
+        else:
+            func = globals().get(command.replace("-", "_"))
+            docstring = func.__doc__.strip() if func and func.__doc__ else "None"
+            command_desc = docstring
+        
+        if command == "hello":
+            command_desc = "Display a welcome message."
+
+        print(f"{command: <15}: {command_desc}")
 
 def get_user_input():
     user_input = prompt("Enter a command: ", completer=WordCompleter(available_commands.keys))
