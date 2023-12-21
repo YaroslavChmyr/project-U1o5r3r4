@@ -41,10 +41,10 @@ class Birthday(Field):
 
 
 class Email(Field):
-    def __init__(self, value):
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+    def __init__(self, email):
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             raise ValueError("Invalid email format. Use name@company.com")
-        super().__init__(value)
+        super().__init__(email)
     
 
 class Record:
@@ -54,7 +54,7 @@ class Record:
         self.notes = []
         # Assume only one address
         self.address = None
-        self.email = []
+        self.email = {}
 
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
@@ -117,24 +117,22 @@ class Record:
     def remove_address(self):
         self.address = None
 
-    def add_email(self, person, email):
-        if person not in self.email:
-            self.email[person] = []
+    def add_email(self, email):
+        if email not in self.email:
+            self.email[email] = []
 
-        self.email[person].append(Email(email))
-        print(f"Email {email} for {person} added.")
+        self.email[email].append(Email(email))
 
-    def remove_email(self, person, email):
-        if person in self.email and email in self.email[person]:
-            self.email[person].remove(email)
-            print(f"Email {email} for {person} has removed.")
+    def remove_email(self, email):
+        if email in self.email:
+            self.email.remove(email)
         else:
-            print(f"Email {email} for {person} has not found.")
+            return f"Email {email} not found."
 
     def show_emails(self):
         print("List of emails:")
-        for person, emails in self.email.items():
-            print(f"{person}: {', '.join(emails)}")
+        for emails in self.email.values():
+            return f"{', '.join(emails)}"
 
 
 class AddressBook(UserDict):

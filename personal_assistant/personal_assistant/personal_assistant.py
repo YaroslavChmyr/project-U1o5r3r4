@@ -216,6 +216,34 @@ def search_note(title, book):
     else:
         print("No notes available.")
 
+@input_error
+def add_email(name, email, book):
+    record = book.find(name)
+    if record:
+        record.add_email(email)
+        return f"Email {email} for {name} added."
+    else:
+        raise KeyError(name)
+
+
+@input_error
+def remove_email(name, email, book):
+    record = book.find(name)
+    if record:
+        record.remove_email(email)
+        return f"Email {email} for {name} removed."
+    else:
+        raise KeyError(name)
+
+
+@input_error
+def show_emails(name, book):
+    record = book.find(name)
+    if record:
+        return record.show_emails(email)
+    else:
+        raise KeyError(name)
+
 def show_help():
     print("Available commands:")
     print("  - hello: Print a welcome message.")
@@ -236,6 +264,9 @@ def show_help():
     print("  - edit-note: Edit a note of a contact.")
     print("  - remove-note: Remove a note from a contact.")
     print("  - search-note: Search for a note by title.")
+    print("  - add-email: Add an email to a contact.")
+    print("  - remove-email: Remove the email of a contact.")
+    print("  - show-emails: Show the email of a contact.")
     print("  - help: Show available commands.")
     print("  - close/exit: Close the assistant bot.")
 
@@ -317,9 +348,6 @@ def main():
             elif command == "search-note":
                 title = input("Please enter note title: ")
                 print(search_note(title, book))
-
-
-
             elif command == "add-email":
                 name = input("Please enter contact name: ")
                 email = input("Please enter email which you want add: ")
@@ -331,9 +359,6 @@ def main():
             elif command == "show-emails":
                 name = input("Please enter contact name: ")
                 print(show_emails(name, book)) 
-
-
-
             elif command == "help":
                 show_help()
             else:
