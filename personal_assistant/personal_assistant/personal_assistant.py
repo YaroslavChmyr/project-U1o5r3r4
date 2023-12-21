@@ -24,6 +24,19 @@ def input_error(func):
     return inner
 
 
+def check_name(name,book):
+    record = book.find(name)
+    if record:
+        pass
+    else:
+        return False
+    
+
+@input_error
+def name_error(name):
+    raise KeyError(name)
+
+
 @input_error
 def add_contact(name, book):
     if not name:
@@ -175,11 +188,8 @@ def remove_address(name, book):
 @input_error
 def add_note(name, title, note, book):
     record = book.find(name)
-    if record:
-        record.add_note(title, note)
-        return "Note added."
-    else:
-        raise KeyError(name)
+    record.add_note(title, note)
+    return "Note added."
 
 
 @input_error
@@ -301,9 +311,12 @@ def main():
                 print(remove_address(name, book))
             elif command == "add-note":
                 name = input("Please enter contact name: ")
-                title = input("Please enter note title: ")
-                note = input("Please enter note text: ")
-                print(add_note(name, title, note, book))
+                if check_name(name, book) == False:
+                    print(name_error(name))
+                else:
+                    title = input("Please enter note title: ")
+                    note = input("Please enter note text: ")
+                    print(add_note(name, title, note, book))
             elif command == "edit-note":
                 name = input("Please enter contact name: ")
                 title = input("Please enter note title: ")
