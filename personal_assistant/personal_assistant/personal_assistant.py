@@ -26,9 +26,7 @@ def input_error(func):
 
 def check_name(name,book):
     record = book.find(name)
-    if record:
-        pass
-    else:
+    if not record:
         return False
     
 
