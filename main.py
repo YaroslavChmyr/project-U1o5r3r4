@@ -244,6 +244,7 @@ def main():
     try:
         book = AddressBook()
         book.load_from_file("address_book.dat")
+
         print("Welcome to the assistant bot!")
         while True:
             user_input = input("Enter a command: ")
@@ -317,6 +318,23 @@ def main():
             elif command == "search-note":
                 title = input("Please enter note title: ")
                 print(search_note(title, book))
+
+
+
+            elif command == "add-email":
+                name = input("Please enter contact name: ")
+                email = input("Please enter email which you want add: ")
+                print(add_email(name, email, book))
+            elif command == "remove-email":
+                name = input("Please enter contact name: ")
+                email = input("Please enter email which you want delete: ")
+                print(remove_email(name, email, book))
+            elif command == "show-emails":
+                name = input("Please enter contact name: ")
+                print(show_emails(name, book)) 
+
+
+
             elif command == "help":
                 show_help()
             else:
