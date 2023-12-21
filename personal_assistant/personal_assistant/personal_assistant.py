@@ -1,4 +1,5 @@
 from .address_book import AddressBook, Record
+from .help_table import show_help
 from prettytable import PrettyTable
 
 
@@ -215,29 +216,6 @@ def search_note(title, book):
         return table
     else:
         print("No notes available.")
-
-def show_help():
-    print("Available commands:")
-    print("  - hello: Print a welcome message.")
-    print("  - all: Show all contacts.")
-    print("  - add-contact: Add a new contact.")
-    print("  - remove-contact: Remove a contact.")
-    print("  - add-phone: Add a phone number to a contact.")
-    print("  - edit-phone: Edit a phone number of a contact.")
-    print("  - remove-phone: Remove a phone number from a contact.")
-    print("  - show-phones: Show all phone numbers of a contact.")
-    print("  - add-birthday: Add a birthday to a contact.")
-    print("  - show-birthday: Show the birthday of a contact.")
-    print("  - birthdays [days]: Show upcoming birthdays for the specified number of days (default is 7 days).")
-    print("  - add-address: Add an address to a contact.")
-    print("  - edit-address: Edit the address of a contact.")
-    print("  - remove-address: Remove the address of a contact.")
-    print("  - add-note: Add a note to a contact.")
-    print("  - edit-note: Edit a note of a contact.")
-    print("  - remove-note: Remove a note from a contact.")
-    print("  - search-note: Search for a note by title.")
-    print("  - help: Show available commands.")
-    print("  - close/exit: Close the assistant bot.")
 
 def main():
     try:
