@@ -40,10 +40,18 @@ class Birthday(Field):
         super().__init__(value)
 
 
+class Email(Field):
+    def __init__(self, value):
+        # Email address format validation
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+            raise ValueError("Invalid email format.")
+        super().__init__(value)
+
 class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
+        self.emails = []
         self.notes = []
         # Assume only one address
         self.address = None
@@ -94,6 +102,15 @@ class Record:
             self.notes.remove(note_to_remove)
         else:
             raise ValueError("No note with such title. Please try again.")
+
+    def add_email(self, email):
+        self.emails.append(Email(email))
+
+    def show_emails(self):
+        return [email.value for email in self.emails]
+
+    def remove_email(self, email):
+        self.emails = [e for e in self.emails if e.value != email]
 
     def add_address(self, address):
         if self.address:

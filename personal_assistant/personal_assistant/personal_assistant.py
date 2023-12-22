@@ -180,6 +180,32 @@ def show_birthday(book):
 
 
 @input_error
+def add_email(book):
+    """
+    Add an email address to a contact.
+    """
+    name = input("Please enter contact's name: ")
+    check_name(name, book)
+    email = input("Please enter email address: ")
+    record = book.find(name)
+    record.add_email(email)
+    return "Email added."
+
+
+@input_error
+def show_emails(book):
+    """
+    Show all email addresses for a contact.
+    """
+    name = input("Please enter contact's name: ")
+    check_name(name, book)
+    record = book.find(name)
+    if record.emails:
+       return "\n".join(record.show_emails())
+    else:
+       return "There are no contact email addresses availiable."
+
+@input_error
 def add_address(book):
     """
     Add an address to a contact.
@@ -311,7 +337,7 @@ def show_help():
             func = globals().get(command.replace("-", "_"))
             docstring = func.__doc__.strip() if func and func.__doc__ else "None"
             command_desc = docstring
-        
+
         if command == "hello":
             command_desc = "Display a welcome message."
 
@@ -364,6 +390,10 @@ def main():
                 print(edit_address(book))
             elif command == "remove-address":
                 print(remove_address(book))
+            elif command == "add-email":
+                print(add_email(book))
+            elif command == "show-emails":
+                print(show_emails(book))
             elif command == "add-note":
                 print(add_note(book))
             elif command == "edit-note":
