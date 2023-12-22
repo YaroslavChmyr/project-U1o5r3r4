@@ -35,7 +35,7 @@ def check_name(name, book):
 @input_error
 def add_contact(book):
     """
-    Add a new contact.
+    Add a new contact to the address book.
     """
     name = input("Please enter contact name: ")
     if not name:
@@ -51,7 +51,7 @@ def add_contact(book):
 @input_error
 def remove_contact(book):
     """
-    Remove a contact.
+    Remove a contact from the address book.
     """
     name = input("Please enter contact's name: ")
     check_name(name, book)
@@ -75,7 +75,7 @@ def add_phone(book):
 @input_error
 def edit_phone(book):
     """
-    Edit a phone number of a contact.
+    Edit contact's phone number.
     """
     name = input("Please enter contact's name: ")
     check_name(name, book)
@@ -102,7 +102,7 @@ def remove_phone(book):
 @input_error
 def show_phones(book):
     """
-    Show all phone numbers of contacts.
+    Show all phone numbers of the contact.
     """
     name = input("Please enter contact's name: ")
     check_name(name, book)
@@ -117,11 +117,12 @@ def show_all(book):
     """
     if book.data.values():
         table = PrettyTable()
-        table.field_names = ["Name", "Phones", "Address", "Birthday", "Note Title", "Note Content"]
+        table.field_names = ["Name", "Phones", "Address", "Birthday", "Email", "Note Title", "Note Content"]
         table.align = "l"
 
         for record in book.data.values():
             phones_str = "\n".join(p.value for p in record.phones)
+            email_str = "\n".join(e.value for e in record.emails)
             notes_str = ""
             notes_titles_str = ""
             for note in record.notes:
@@ -143,7 +144,7 @@ def show_all(book):
             )
 
             table.add_row(
-                [record.name.value, phones_str, address_str, birthday_str, notes_titles_str, notes_str],
+                [record.name.value, phones_str, address_str, birthday_str, email_str, notes_titles_str, notes_str],
                 divider=True
             )
 
@@ -168,7 +169,7 @@ def add_birthday(book):
 @input_error
 def show_birthday(book):
     """
-    Show the birthday of a contact.
+    Show contact's birthday.
     """
     name = input("Please enter contact's name: ")
     check_name(name, book)
@@ -195,7 +196,7 @@ def add_email(book):
 @input_error
 def show_emails(book):
     """
-    Show all email addresses for a contact.
+    Show all email addresses of the contact.
     """
     name = input("Please enter contact's name: ")
     check_name(name, book)
@@ -204,6 +205,20 @@ def show_emails(book):
        return "\n".join(record.show_emails())
     else:
        return "There are no contact email addresses availiable."
+
+
+@input_error
+def remove_email(book):
+    """
+    Remove contact's email address.
+    """
+    name = input("Please enter contact's name: ")
+    check_name(name, book)
+    email = input("Please email address to remove: ")
+    record = book.find(name)
+    record.remove_email(email)
+    return "Email removed."
+
 
 @input_error
 def add_address(book):
@@ -221,7 +236,7 @@ def add_address(book):
 @input_error
 def edit_address(book):
     """
-    Edit the address of a contact.
+    Edit contact's email address.
     """
     name = input("Please enter contact's name: ")
     check_name(name, book)
@@ -234,7 +249,7 @@ def edit_address(book):
 @input_error
 def remove_address(book):
     """
-    Remove the address of a contact.
+    Remove contact's email address.
     """
     name = input("Please enter contact's name: ")
     check_name(name, book)
@@ -260,7 +275,7 @@ def add_note(book):
 @input_error
 def edit_note(book):
     """
-    Edit a note of a contact.
+    Edit a contact note by title.
     """
     name = input("Please enter contact's name: ")
     check_name(name, book)
@@ -274,7 +289,7 @@ def edit_note(book):
 @input_error
 def remove_note(book):
     """
-    Remove a note from a contact.
+    Remove contact's note.
     """
     name = input("Please enter contact's name: ")
     check_name(name, book)
@@ -315,6 +330,9 @@ available_commands = {
     "add-address" : "add_address",
     "edit-address" :"edit_address",
     "remove-address" : "remove_address",
+    "add-email":"add_email",
+    "show-emails":"show_emails",
+    "remove-email":"remove_email",
     "add-note" : "add_note",
     "edit-note" : "edit_note",
     "remove-note" : "remove_note",
@@ -325,16 +343,18 @@ available_commands = {
     "hello" : "hello"
 }
 
+
 def show_help():
     """
     Display help information for available commands.
     """
     print("Available commands:")
-    for command in available_commands.values():
+    for command in available_commands.keys():
         if command in ["exit","close"]:
             command_desc = "Exit the assistant bot."
         else:
-            func = globals().get(command.replace("-", "_"))
+            func_name = available_commands[command]
+            func = globals().get(func_name.replace("-", "_"))
             docstring = func.__doc__.strip() if func and func.__doc__ else "None"
             command_desc = docstring
 
@@ -343,8 +363,9 @@ def show_help():
 
         print(f"{command: <15}: {command_desc}")
 
+
 def get_user_input():
-    user_input = prompt("Enter a command: ", completer=WordCompleter(available_commands.keys))
+    user_input = prompt("Enter a command: ", completer=WordCompleter(available_commands.keys()))
     return user_input
 
 
@@ -394,6 +415,8 @@ def main():
                 print(add_email(book))
             elif command == "show-emails":
                 print(show_emails(book))
+            elif command == "remove-email":
+                print(remove_email(book))
             elif command == "add-note":
                 print(add_note(book))
             elif command == "edit-note":

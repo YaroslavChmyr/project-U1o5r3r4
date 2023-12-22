@@ -49,7 +49,8 @@ run_personal_assistant
 - **remove-note**: Remove note from a contact.
 - **search-note**: Search for note by title.
 - **all**: Display information about all contacts.
-- **hello**: Get a greeting from an assistant.
+- **hello**: Display a welcome message.
+ -**help**: Display help information for available commands.
 - **close** or **exit**: Close the program.
 
 ## Examples:
