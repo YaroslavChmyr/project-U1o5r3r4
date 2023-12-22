@@ -40,10 +40,18 @@ class Birthday(Field):
         super().__init__(value)
 
 
+class Email(Field):
+    def __init__(self, value):
+        # Email address format validation
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+            raise ValueError("Invalid email format.")
+        super().__init__(value)
+
 class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
+        self.emails = []
         self.notes = []
         # Assume only one address
         self.address = None
@@ -52,7 +60,14 @@ class Record:
         self.phones.append(Phone(phone))
 
     def remove_phone(self, phone):
-        self.phones = [p for p in self.phones if p.value != phone]
+        # Find the appropriate Phone object in the list
+        matching_phones = [p for p in self.phones if p.value == phone]
+
+        if matching_phones:
+            self.phones.remove(matching_phones[0])
+            return "Phone number removed."
+        else:
+            raise ValueError(f"Phone number '{phone}' doesn't exist for this contact.")
 
     def edit_phone(self, old_phone, new_phone):
         for phone in self.phones:
@@ -64,7 +79,7 @@ class Record:
         if self.phones:
             return "\n".join(phone.value for phone in self.phones)
         else:
-            return "No phone numbers available."
+            return "No phone numbers available for this contact."
 
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
@@ -94,6 +109,28 @@ class Record:
             self.notes.remove(note_to_remove)
         else:
             raise ValueError("No note with such title. Please try again.")
+
+    def add_email(self, email):
+        if any(e.value == email for e in self.emails):
+            raise ValueError(f"Email '{email}' already exists for this contact.")
+        else:
+            self.emails.append(Email(email))
+            return "Email added."
+
+    def show_emails(self):
+        if self.emails:
+            return "\n".join(email.value for email in self.emails)
+        else:
+            return "No email addresses available for this contact."
+
+    def remove_email(self, email):
+        matching_emails = [e for e in self.emails if e.value == email]
+
+        if matching_emails:
+            self.emails.remove(matching_emails[0])
+            return "Email removed."
+        else:
+            raise ValueError(f"Email '{email}' doesn't exist for this contact.")
 
     def add_address(self, address):
         if self.address:
