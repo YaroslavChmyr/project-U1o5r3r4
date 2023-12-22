@@ -57,6 +57,8 @@ class Record:
     def edit_phone(self, old_phone, new_phone):
         for phone in self.phones:
             if phone.value == old_phone:
+                if not re.match(r"^\d{10}$", new_phone):
+                    raise ValueError("Invalid phone number format. Use a 10-digit number.")
                 phone.value = new_phone
                 break
 
