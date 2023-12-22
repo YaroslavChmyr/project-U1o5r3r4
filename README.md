@@ -50,7 +50,7 @@ run_personal_assistant
 - **search-note**: Search for note by title.
 - **all**: Display information about all contacts.
 - **hello**: Display a welcome message.
- -**help**: Display help information for available commands.
+- **help**: Display help information for available commands.
 - **close** or **exit**: Close the program.
 
 ## Examples:
