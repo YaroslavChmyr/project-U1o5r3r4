@@ -48,6 +48,7 @@ def add_contact(book):
         book.add_record(record)
         return f"Contact '{name}' added."
 
+
 @input_error
 def remove_contact(book):
     """
@@ -337,6 +338,7 @@ available_commands = {
     "edit-note" : "edit_note",
     "remove-note" : "remove_note",
     "search-note" : "search_note",
+    "birthdays" : "birthdays",
     "help" : "show_help",
     "exit" : "exit",
     "close" : "close",
@@ -360,6 +362,9 @@ def show_help():
 
         if command == "hello":
             command_desc = "Display a welcome message."
+
+        if command == "birthdays":
+            command_desc = "Show birthdays that will occur during the next day interval. The default interval is 7 days."
 
         print(f"{command: <15}: {command_desc}")
 
