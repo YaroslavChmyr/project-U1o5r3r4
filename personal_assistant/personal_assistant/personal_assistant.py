@@ -202,7 +202,7 @@ def show_emails(book):
     check_name(name, book)
     record = book.find(name)
     if record.emails:
-       return "\n".join(record.show_emails())
+        return record.show_emails()
     else:
        return "There are no contact email addresses availiable."
 
