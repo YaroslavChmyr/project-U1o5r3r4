@@ -19,7 +19,7 @@ Personal assistant allows:
 Save and install your package:
 ```
 python setup.py sdist
-pip install dist/personal_assistant-1.0.tar.gz
+pip install dist/personal_assistant-1.0.0.tar.gz
 ```
 
 Call the program from the console:
